@@ -23,14 +23,14 @@ DELETE
 FROM issued_status
 WHERE issued_id = 'IS121';
 
--- Retrieve All Books Issued by a Specific Employee with emp_id = 'E101'
+-- Task 4: Retrieve All Books Issued by a Specific Employee with emp_id = 'E101'
 SELECT e.emp_id, emp_name, position, issued_id, issued_member_id, issued_book_name, issued_date, issued_book_isbn
 FROM issued_status AS i
 JOIN employees AS e
 	ON i.issued_emp_id = e.emp_id
 WHERE e.emp_id = 'E101';
 
--- List Members Who Have Issued More Than One Book 
+-- Task 5:List Members Who Have Issued More Than One Book 
 SELECT member_id, member_name, COUNT(*) AS no_books_issued
 FROM issued_status AS i
 JOIN members AS m
@@ -38,7 +38,7 @@ JOIN members AS m
 GROUP BY member_id, member_name
 HAVING no_books_issued > 1;
 
--- Create Summary Tables: Used CTAS to generate new tables based on query results - each book and total book_issued_cnt
+-- Task 6: Create Summary Tables: Used CTAS to generate new tables based on query results - each book and total book_issued_cnt
 CREATE TABLE book_issued_cnt AS
 SELECT b.isbn, b.book_title, COUNT(ist.issued_id) AS issue_count
 FROM issued_status as ist
@@ -49,7 +49,7 @@ GROUP BY b.isbn, b.book_title;
 SELECT *
 FROM book_issued_cnt;
 
--- Retrieve All Books in a Specific Category:
+-- Task 7: Retrieve All Books in a Specific Category:
 SELECT DISTINCT(category)
 FROM books;
 
@@ -63,12 +63,12 @@ FROM books
 GROUP BY category
 ORDER BY total_rental DESC;
 
--- List Members Who Registered in the Last 180 Days:
+-- Task 9: List Members Who Registered in the Last 180 Days:
 SELECT * 
 FROM members
 WHERE reg_date >= CURDATE() - INTERVAL 180 DAY;
 
--- List Employees with Their Branch Manager's Name and their branch details:
+-- Task 10: List Employees with Their Branch Manager's Name and their branch details:
 SELECT e.emp_id, e.emp_name, e.position, manager_id, e2.emp_name AS manager, b.*
 FROM branch AS b
 JOIN employees AS e
@@ -76,7 +76,7 @@ JOIN employees AS e
 JOIN employees AS e2
 	ON b.manager_id = e2.emp_id;
     
--- Create a Table of Books with Rental Price Above a Certain Threshold: 7.00
+-- Task 11: Create a Table of Books with Rental Price Above a Certain Threshold: 7.00
 CREATE TABLE expensive_books AS
 SELECT isbn, book_title, rental_price
 FROM books
@@ -85,21 +85,21 @@ WHERE rental_price > 7.00;
 SELECT *
 FROM expensive_books;
 
--- Retrieve the List of Books Not Yet Returned
+-- Task 12: Retrieve the List of Books Not Yet Returned
 SELECT * 
 FROM issued_status as ist
 LEFT JOIN return_status as rs
 	ON rs.issued_id = ist.issued_id
 WHERE rs.return_id IS NULL;
 
--- Retrieve the List of Books Returned
+-- Task 13: Retrieve the List of Books Returned
 SELECT * 
 FROM issued_status as ist
 LEFT JOIN return_status as rs
 	ON rs.issued_id = ist.issued_id
 WHERE rs.return_id IS NOT NULL;
 
--- Branch Performance Report
+-- Task 14: Branch Performance Report
 /* Create a query that generates a performance report for each branch, 
 showing the number of books issued, 
 the number of books returned, 
@@ -134,7 +134,7 @@ GROUP BY b.branch_id,b.manager_id;
 
 SELECT * FROM branch_reports;
 
--- Create a Table of Active Members
+-- Task 15: Create a Table of Active Members
 /* 
 Use the CREATE TABLE AS (CTAS) statement to create a new table active_members
 containing members who have issued at least one book in the last 2 months.
@@ -150,7 +150,7 @@ WHERE member_id IN (
 SELECT *
 FROM active_members;
 
--- Find Employees with the Most Book Issues Processed
+-- Task 16: Find Employees with the Most Book Issues Processed
 /* 
 Query to find the top 3 employees who have processed the most book issues. 
 Display the employee name, number of books processed, and their branch.
